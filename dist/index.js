@@ -35,6 +35,14 @@ async function getGithubInfo(author) {
         const htmlstr = await result.text();
         const data = htmlstr.split("\n");
         const repoList = getRepoList(data);
+        //-------------------获取star数-----------------
+        const list = [];
+        data.forEach((item) => {
+            if (item.includes(`href=\"/${author}/`)) {
+                list.push(item);
+            }
+        });
+        console.log(list);
         return repoList;
     }
     catch (error) {

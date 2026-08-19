@@ -51,6 +51,15 @@ async function getGithubInfo(
 
     const repoList: (string | undefined)[] = getRepoList(data);
 
+    //-------------------获取star数-----------------
+    const list: (string | undefined)[] = [];
+    data.forEach((item) => {
+      if (item.includes(`href=\"/${author}/`)) {
+        list.push(item);
+      }
+    });
+    console.log(list);
+
     return repoList;
   } catch (error) {
     console.log(error);
