@@ -17,7 +17,8 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "pnpm build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --env-file=.env --use-env-proxy --use-system-ca --watch ./dist/index.js"
   },
   "keywords": [],
   "author": "shf-ns",

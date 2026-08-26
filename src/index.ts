@@ -1,8 +1,5 @@
 const baseUrl: string = "https://github.com/";
 
-const controller = new AbortController();
-const timeoutId = setTimeout(() => controller.abort(), 30000);
-
 /**
  * 提取仓库名称
  *
@@ -36,9 +33,6 @@ async function getGithubInfo(
   try {
     const result: Response = await fetch(
       baseUrl + author + "?tab=repositories",
-      {
-        signal: controller.signal,
-      },
     );
 
     if (!result.ok) {
@@ -53,18 +47,23 @@ async function getGithubInfo(
 
     //-------------------获取star数-----------------
     const list: (string | undefined)[] = [];
-    data.forEach((item) => {
-      if (item.includes(`href=\"/${author}/`)) {
-        list.push(item);
-      }
+
+    //star数的索引
+    const indexes = data
+      .map((item, idx) =>
+        item.includes(`.45a.75.75 0 0 1-.564-.41L8 2.694Z"></path>`) ? idx : -1,
+      )
+      .filter((idx) => idx !== -1);
+
+    indexes.forEach((idx) => {
+      list.push(data[idx + 2]?.trim());
     });
+
     console.log(list);
 
     return repoList;
   } catch (error) {
     console.log(error);
-  } finally {
-    clearTimeout(timeoutId);
   }
 }
 
