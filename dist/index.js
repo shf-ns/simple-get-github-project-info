@@ -21,6 +21,24 @@ function getRepoList(data) {
     });
     return repoList;
 }
+/**
+ * 提取star数
+ *
+ * @param data HTML字符串数组
+ * @returns star数数组
+ */
+function getStarList(data) {
+    const list = [];
+    //star数的索引
+    const indexes = data
+        .map((item, idx) => item.includes(`.45a.75.75 0 0 1-.564-.41L8 2.694Z"></path>`) ? idx : -1)
+        .filter((idx) => idx !== -1);
+    indexes.forEach((idx) => {
+        list.push(data[idx + 2]?.trim());
+    });
+    list.splice(0, 2);
+    return list;
+}
 async function getGithubInfo(author) {
     try {
         const result = await fetch(baseUrl + author + "?tab=repositories");
@@ -31,22 +49,12 @@ async function getGithubInfo(author) {
         const htmlstr = await result.text();
         const data = htmlstr.split("\n");
         const repoList = getRepoList(data);
-        //-------------------获取star数-----------------
-        const list = [];
-        //star数的索引
-        const indexes = data
-            .map((item, idx) => item.includes(`.45a.75.75 0 0 1-.564-.41L8 2.694Z"></path>`) ? idx : -1)
-            .filter((idx) => idx !== -1);
-        indexes.forEach((idx) => {
-            list.push(data[idx + 2]?.trim());
-        });
-        console.log(list);
-        return repoList;
+        const starList = getStarList(data);
     }
     catch (error) {
         console.log(error);
     }
 }
-getGithubInfo("Moyhuai");
+getGithubInfo("Roy-Jin");
 export {};
 //# sourceMappingURL=index.js.map
