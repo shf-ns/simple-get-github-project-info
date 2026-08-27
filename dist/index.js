@@ -1,3 +1,6 @@
+let repoList = [];
+let langList = [];
+let stratList = [];
 /**
  * 处理HTML字符串，提取包含所需信息的HTML部分
  * @param {string} htmlstr HTML字符串
@@ -41,9 +44,7 @@ function handleHtml(htmlstr) {
  * @returns {string[]} 仓库列表
  */
 function getRepoList(list) {
-    const repoList = [];
     list.map((item) => repoList.push(item[4]?.slice(0, -4) || ""));
-    return repoList;
 }
 /**
  * 获取语言列表
@@ -51,7 +52,6 @@ function getRepoList(list) {
  * @returns {string[][]} 语言列表
  */
 function getLangList(list) {
-    const langList = [];
     list.map((item) => langList.push(item
         .map((items) => {
         if (items.includes('itemprop="programmingLanguage"')) {
@@ -61,7 +61,6 @@ function getLangList(list) {
     })
         .filter((item) => item !== "")
         .map((i) => i.slice(37, -7))));
-    return langList;
 }
 /**
  * 获取strat数列表
@@ -69,7 +68,6 @@ function getLangList(list) {
  * @returns {number[]} strat数列表
  */
 function getStratList(list) {
-    const stratList = [];
     const index = list
         .map((item) => item.findIndex((items) => items.includes('<svg aria-label="star"')))
         .map((item) => {
@@ -85,7 +83,6 @@ function getStratList(list) {
         }
         stratList.push(parseInt(list[i][index[i]]));
     }
-    return stratList;
 }
 async function getGithubInfo(author) {
     try {
@@ -99,13 +96,12 @@ async function getGithubInfo(author) {
         const list = handleHtml(htmlstr);
         // console.log(list);
         //---------------------------获取仓库列表--------------------------------
-        const repoList = getRepoList(list);
-        // console.log(repoList);
+        getRepoList(list);
+        console.log(repoList);
+        console.log(repoList.length);
         //-----------------------------获取语言列表-----------------------------
-        const langList = getLangList(list);
         // console.log(langList);
         //---------------------------获取strat数--------------------------
-        const stratList = getStratList(list);
         // console.log(stratList);
     }
     catch (error) {
@@ -113,8 +109,8 @@ async function getGithubInfo(author) {
     }
 }
 // getGithubInfo("Moyhuai");
-getGithubInfo("Roy-Jin");
+// getGithubInfo("Roy-Jin");
+getGithubInfo("xcatliu");
 export {};
-// getGithubInfo("xcatliu");
 // getGithubInfo("shf-ns");
 //# sourceMappingURL=index.js.map

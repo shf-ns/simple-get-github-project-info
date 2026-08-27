@@ -1,3 +1,6 @@
+let repoList: string[] = [];
+let langList: string[][] = [];
+let stratList: number[] = [];
 /**
  * 处理HTML字符串，提取包含所需信息的HTML部分
  * @param {string} htmlstr HTML字符串
@@ -53,10 +56,8 @@ function handleHtml(htmlstr: string): string[][] {
  * @param {string[][]} list 处理后的HTML部分数组
  * @returns {string[]} 仓库列表
  */
-function getRepoList(list: string[][]): string[] {
-  const repoList: string[] = [];
+function getRepoList(list: string[][]): void {
   list.map((item) => repoList.push(item[4]?.slice(0, -4) || ""));
-  return repoList;
 }
 
 /**
@@ -64,8 +65,7 @@ function getRepoList(list: string[][]): string[] {
  * @param {string[][]} list 处理后的HTML部分数组
  * @returns {string[][]} 语言列表
  */
-function getLangList(list: string[][]): string[][] {
-  const langList: string[][] = [];
+function getLangList(list: string[][]): void {
   list.map((item) =>
     langList.push(
       item
@@ -79,7 +79,6 @@ function getLangList(list: string[][]): string[][] {
         .map((i) => i.slice(37, -7)),
     ),
   );
-  return langList;
 }
 
 /**
@@ -87,8 +86,7 @@ function getLangList(list: string[][]): string[][] {
  * @param {string[][]} list 处理后的HTML部分数组
  * @returns {number[]} strat数列表
  */
-function getStratList(list: string[][]): number[] {
-  const stratList: number[] = [];
+function getStratList(list: string[][]): void {
   const index: number[] = list
     .map((item) =>
       item.findIndex((items) => items.includes('<svg aria-label="star"')),
@@ -107,7 +105,6 @@ function getStratList(list: string[][]): number[] {
     }
     stratList.push(parseInt(list[i]![index[i]!]!));
   }
-  return stratList;
 }
 
 async function getGithubInfo(author: string): Promise<void> {
@@ -119,7 +116,6 @@ async function getGithubInfo(author: string): Promise<void> {
     if (!result.ok) {
       throw new Error(`HTTP error! status: ${result.status}`);
     }
-
     //-------------------------解析HTML----------------------------
     const htmlstr: string = await result.text();
 
@@ -128,15 +124,16 @@ async function getGithubInfo(author: string): Promise<void> {
     // console.log(list);
 
     //---------------------------获取仓库列表--------------------------------
-    const repoList: string[] = getRepoList(list);
-    // console.log(repoList);
+    getRepoList(list);
 
+    console.log(repoList);
+    console.log(repoList.length);
     //-----------------------------获取语言列表-----------------------------
-    const langList: string[][] = getLangList(list);
+
     // console.log(langList);
 
     //---------------------------获取strat数--------------------------
-    const stratList: number[] = getStratList(list);
+
     // console.log(stratList);
   } catch (error) {
     console.log(error);
@@ -144,6 +141,6 @@ async function getGithubInfo(author: string): Promise<void> {
 }
 
 // getGithubInfo("Moyhuai");
-getGithubInfo("Roy-Jin");
-// getGithubInfo("xcatliu");
+// getGithubInfo("Roy-Jin");
+getGithubInfo("xcatliu");
 // getGithubInfo("shf-ns");
