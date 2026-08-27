@@ -39,11 +39,22 @@ async function getGithubInfo(author) {
         console.log(list);
         //----------获取仓库列表-------------
         const repoList = list.map((item) => item[4]?.slice(0, -4) || "");
+        //----------获取语言列表-------------
+        const langList = list.map((item) => item
+            .map((items) => {
+            if (items.includes('itemprop="programmingLanguage"')) {
+                return items;
+            }
+            return "";
+        })
+            .filter((item) => item !== "")
+            .map((i) => i.slice(37, -7)));
     }
     catch (error) {
         console.log(error);
     }
 }
-getGithubInfo("Moyhuai");
+// getGithubInfo("Moyhuai");
+getGithubInfo("Roy-Jin");
 export {};
 //# sourceMappingURL=index.js.map

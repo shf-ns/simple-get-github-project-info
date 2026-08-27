@@ -58,9 +58,23 @@ async function getGithubInfo(author: string): Promise<void> {
 
     //----------获取仓库列表-------------
     const repoList: string[] = list.map((item) => item[4]?.slice(0, -4) || "");
+
+    //----------获取语言列表-------------
+    const langList: string[][] = list.map((item) =>
+      item
+        .map((items) => {
+          if (items.includes('itemprop="programmingLanguage"')) {
+            return items;
+          }
+          return "";
+        })
+        .filter((item) => item !== "")
+        .map((i) => i.slice(37, -7)),
+    );
   } catch (error) {
     console.log(error);
   }
 }
 
-getGithubInfo("Moyhuai");
+// getGithubInfo("Moyhuai");
+getGithubInfo("Roy-Jin");
