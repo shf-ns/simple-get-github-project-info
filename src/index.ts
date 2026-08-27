@@ -60,16 +60,17 @@ async function getGithubInfo(author: string): Promise<void> {
       throw new Error(`HTTP error! status: ${result.status}`);
     }
 
-    //-------------------解析HTML-----------------
+    //-------------------------解析HTML----------------------------
     const htmlstr: string = await result.text();
 
-    //----------处理HTML字符串-------------
+    //---------------------处理HTML字符串---------------------------
     const list: string[][] = handleHtml(htmlstr);
+    console.log(list);
 
-    //----------获取仓库列表-------------
+    //---------------------------获取仓库列表--------------------------------
     const repoList: string[] = list.map((item) => item[4]?.slice(0, -4) || "");
 
-    //----------获取语言列表-------------
+    //-----------------------------获取语言列表-----------------------------
     const langList: string[][] = list.map((item) =>
       item
         .map((items) => {
@@ -81,6 +82,27 @@ async function getGithubInfo(author: string): Promise<void> {
         .filter((item) => item !== "")
         .map((i) => i.slice(37, -7)),
     );
+
+    //---------------------------获取strat数--------------------------
+    const stratList: string[] = [];
+    const index: number[] = list
+      .map((item) =>
+        item.findIndex((items) => items.includes('<span class="tmp-mr-3">')),
+      )
+      .map((item) => {
+        if (item == -1) {
+          return item;
+        }
+        return item - 1;
+      });
+
+    for (let i: number = 0; i < index.length; i++) {
+      if (index[i] == -1) {
+        index[i] = list[i]!.length - 2;
+      }
+      stratList.push(list[i]![index[i]!]!);
+    }
+    console.log(stratList);
   } catch (error) {
     console.log(error);
   }
