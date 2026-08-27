@@ -59,6 +59,29 @@ function getRepoList(list: string[][]): string[] {
   return repoList;
 }
 
+/**
+ * 获取语言列表
+ * @param {string[][]} list 处理后的HTML部分数组
+ * @returns {string[][]} 语言列表
+ */
+function getLangList(list: string[][]): string[][] {
+  const langList: string[][] = [];
+  list.map((item) =>
+    langList.push(
+      item
+        .map((items) => {
+          if (items.includes('itemprop="programmingLanguage"')) {
+            return items;
+          }
+          return "";
+        })
+        .filter((item) => item !== "")
+        .map((i) => i.slice(37, -7)),
+    ),
+  );
+  return langList;
+}
+
 async function getGithubInfo(author: string): Promise<void> {
   try {
     const result: Response = await fetch(
@@ -81,17 +104,7 @@ async function getGithubInfo(author: string): Promise<void> {
     // console.log(repoList);
 
     //-----------------------------获取语言列表-----------------------------
-    const langList: string[][] = list.map((item) =>
-      item
-        .map((items) => {
-          if (items.includes('itemprop="programmingLanguage"')) {
-            return items;
-          }
-          return "";
-        })
-        .filter((item) => item !== "")
-        .map((i) => i.slice(37, -7)),
-    );
+    const langList: string[][] = getLangList(list);
     // console.log(langList);
 
     //---------------------------获取strat数--------------------------

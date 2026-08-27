@@ -45,6 +45,24 @@ function getRepoList(list) {
     list.map((item) => repoList.push(item[4]?.slice(0, -4) || ""));
     return repoList;
 }
+/**
+ * 获取语言列表
+ * @param {string[][]} list 处理后的HTML部分数组
+ * @returns {string[][]} 语言列表
+ */
+function getLangList(list) {
+    const langList = [];
+    list.map((item) => langList.push(item
+        .map((items) => {
+        if (items.includes('itemprop="programmingLanguage"')) {
+            return items;
+        }
+        return "";
+    })
+        .filter((item) => item !== "")
+        .map((i) => i.slice(37, -7))));
+    return langList;
+}
 async function getGithubInfo(author) {
     try {
         const result = await fetch("https://github.com/" + author + "?page=1&tab=repositories");
@@ -60,15 +78,7 @@ async function getGithubInfo(author) {
         const repoList = getRepoList(list);
         // console.log(repoList);
         //-----------------------------获取语言列表-----------------------------
-        const langList = list.map((item) => item
-            .map((items) => {
-            if (items.includes('itemprop="programmingLanguage"')) {
-                return items;
-            }
-            return "";
-        })
-            .filter((item) => item !== "")
-            .map((i) => i.slice(37, -7)));
+        const langList = getLangList(list);
         // console.log(langList);
         //---------------------------获取strat数--------------------------
         const stratList = [];
