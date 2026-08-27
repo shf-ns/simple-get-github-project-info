@@ -1,6 +1,8 @@
 let repoList: string[] = [];
 let langList: string[][] = [];
 let stratList: number[] = [];
+let updateTimeList: string[] = [];
+
 /**
  * 处理HTML字符串，提取包含所需信息的HTML部分
  * @param {string} htmlstr HTML字符串
@@ -107,6 +109,14 @@ function getStratList(list: string[][]): void {
   }
 }
 
+function getUpdateTimeList(list: string[][]): void {
+  updateTimeList.push(
+    ...list
+      .map((item) => item[item.length - 1] || "")
+      .map((item) => item.slice(item.lastIndexOf(">") + 1)),
+  );
+}
+
 async function getGithubInfo(author: string): Promise<void> {
   try {
     const result: Response = await fetch(
@@ -121,26 +131,29 @@ async function getGithubInfo(author: string): Promise<void> {
 
     //---------------------处理HTML字符串---------------------------
     const list: string[][] = handleHtml(htmlstr);
-    // console.log(list);
+    console.log(list);
 
     //---------------------------获取仓库列表--------------------------------
     getRepoList(list);
-
-    console.log(repoList);
+    // console.log(repoList);
     console.log(repoList.length);
     //-----------------------------获取语言列表-----------------------------
-
+    getLangList(list);
     // console.log(langList);
 
     //---------------------------获取strat数--------------------------
-
+    getStratList(list);
     // console.log(stratList);
+
+    //---------------------------获取更新时间--------------------------
+    getUpdateTimeList(list);
+    // console.log(updateTimeList);
   } catch (error) {
     console.log(error);
   }
 }
 
 // getGithubInfo("Moyhuai");
-// getGithubInfo("Roy-Jin");
-getGithubInfo("xcatliu");
+getGithubInfo("Roy-Jin");
+// getGithubInfo("xcatliu");
 // getGithubInfo("shf-ns");
