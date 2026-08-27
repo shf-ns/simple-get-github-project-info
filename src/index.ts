@@ -37,6 +37,27 @@ async function getGithubInfo(author: string): Promise<void> {
       //移动指针，继续找下一处
       startIndex = tailEnd + "</relative-time>".length;
     }
+
+    const list: string[][] = results.map((item) =>
+      item
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(
+          (item) =>
+            item !== "" &&
+            item !== "</h3>" &&
+            item !== "</div>" &&
+            item !== "</span>" &&
+            item !== "</relative-time>" &&
+            item !== "</a>" &&
+            item !== "</svg>" &&
+            item !== "</p>",
+        ),
+    );
+    console.log(list);
+
+    //----------获取仓库列表-------------
+    const repoList: string[] = list.map((item) => item[4]?.slice(0, -4) || "");
   } catch (error) {
     console.log(error);
   }
