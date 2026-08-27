@@ -1,44 +1,4 @@
 const baseUrl = "https://github.com/";
-/**
- * 提取仓库名称
- *
- * @param data HTML字符串数组
- * @returns 仓库名称数组
- */
-function getRepoList(data) {
-    // ---------------提取仓库名称-----------------
-    const list = [];
-    data.forEach((item) => {
-        if (item.includes('itemprop="name codeRepository"')) {
-            list.push(item);
-        }
-    });
-    const arr = list.map((item) => item.trim().split(" ")[1]);
-    const repoList = arr.map((item) => {
-        if (item) {
-            return item.slice(item.lastIndexOf("/") + 1);
-        }
-    });
-    return repoList;
-}
-/**
- * 提取star数
- *
- * @param data HTML字符串数组
- * @returns star数数组
- */
-function getStarList(data) {
-    const list = [];
-    //star数的索引
-    const indexes = data
-        .map((item, idx) => item.includes(`.45a.75.75 0 0 1-.564-.41L8 2.694Z"></path>`) ? idx : -1)
-        .filter((idx) => idx !== -1);
-    indexes.forEach((idx) => {
-        list.push(data[idx + 2]?.trim());
-    });
-    list.splice(0, 2);
-    return list;
-}
 async function getGithubInfo(author) {
     try {
         const result = await fetch(baseUrl + author + "?tab=repositories");
@@ -47,14 +7,29 @@ async function getGithubInfo(author) {
         }
         //-------------------解析HTML-----------------
         const htmlstr = await result.text();
-        const data = htmlstr.split("\n");
-        const repoList = getRepoList(data);
-        const starList = getStarList(data);
+        //----------截取包含所需信息的HTML部分-------------
+        const results = [];
+        let startIndex = 0;
+        while (startIndex < htmlstr.length) {
+            //找头部
+            const headStart = htmlstr.indexOf('<div class="col-10 col-lg-9 d-inline-block">', startIndex);
+            if (headStart === -1)
+                break;
+            //找尾部（从头部结束位置之后开始找，防止重叠）
+            const tailStrat = headStart + '<div class="col-10 col-lg-9 d-inline-block">'.length;
+            const tailEnd = htmlstr.indexOf("</relative-time>", tailStrat);
+            if (tailEnd === -1)
+                break;
+            //截取
+            results.push(htmlstr.substring(headStart, tailEnd));
+            //移动指针，继续找下一处
+            startIndex = tailEnd + "</relative-time>".length;
+        }
     }
     catch (error) {
         console.log(error);
     }
 }
-getGithubInfo("Roy-Jin");
+getGithubInfo("Moyhuai");
 export {};
 //# sourceMappingURL=index.js.map
