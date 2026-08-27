@@ -1,4 +1,3 @@
-const baseUrl = "https://github.com/";
 /**
  * 处理HTML字符串，提取包含所需信息的HTML部分
  * @param {string} htmlstr HTML字符串
@@ -36,9 +35,19 @@ function handleHtml(htmlstr) {
         item !== "</p>"));
     return list;
 }
+/**
+ * 获取仓库列表
+ * @param {string[][]} list 处理后的HTML部分数组
+ * @returns {string[]} 仓库列表
+ */
+function getRepoList(list) {
+    const repoList = [];
+    list.map((item) => repoList.push(item[4]?.slice(0, -4) || ""));
+    return repoList;
+}
 async function getGithubInfo(author) {
     try {
-        const result = await fetch(baseUrl + author + "?tab=repositories");
+        const result = await fetch("https://github.com/" + author + "?page=1&tab=repositories");
         if (!result.ok) {
             throw new Error(`HTTP error! status: ${result.status}`);
         }
@@ -46,9 +55,9 @@ async function getGithubInfo(author) {
         const htmlstr = await result.text();
         //---------------------处理HTML字符串---------------------------
         const list = handleHtml(htmlstr);
-        console.log(list);
+        // console.log(list);
         //---------------------------获取仓库列表--------------------------------
-        const repoList = list.map((item) => item[4]?.slice(0, -4) || "");
+        const repoList = getRepoList(list);
         // console.log(repoList);
         //-----------------------------获取语言列表-----------------------------
         const langList = list.map((item) => item
@@ -78,7 +87,7 @@ async function getGithubInfo(author) {
             }
             stratList.push(parseInt(list[i][index[i]]));
         }
-        console.log(stratList);
+        // console.log(stratList);
     }
     catch (error) {
         console.log(error);
