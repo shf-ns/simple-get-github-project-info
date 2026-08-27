@@ -82,6 +82,34 @@ function getLangList(list: string[][]): string[][] {
   return langList;
 }
 
+/**
+ * 获取strat数列表
+ * @param {string[][]} list 处理后的HTML部分数组
+ * @returns {number[]} strat数列表
+ */
+function getStratList(list: string[][]): number[] {
+  const stratList: number[] = [];
+  const index: number[] = list
+    .map((item) =>
+      item.findIndex((items) => items.includes('<svg aria-label="star"')),
+    )
+    .map((item) => {
+      if (item == -1) {
+        return item;
+      }
+      return item + 2;
+    });
+
+  for (let i: number = 0; i < index.length; i++) {
+    if (index[i] == -1) {
+      stratList.push(0);
+      continue;
+    }
+    stratList.push(parseInt(list[i]![index[i]!]!));
+  }
+  return stratList;
+}
+
 async function getGithubInfo(author: string): Promise<void> {
   try {
     const result: Response = await fetch(
@@ -108,25 +136,7 @@ async function getGithubInfo(author: string): Promise<void> {
     // console.log(langList);
 
     //---------------------------获取strat数--------------------------
-    const stratList: number[] = [];
-    const index: number[] = list
-      .map((item) =>
-        item.findIndex((items) => items.includes('<svg aria-label="star"')),
-      )
-      .map((item) => {
-        if (item == -1) {
-          return item;
-        }
-        return item + 2;
-      });
-
-    for (let i: number = 0; i < index.length; i++) {
-      if (index[i] == -1) {
-        stratList.push(0);
-        continue;
-      }
-      stratList.push(parseInt(list[i]![index[i]!]!));
-    }
+    const stratList: number[] = getStratList(list);
     // console.log(stratList);
   } catch (error) {
     console.log(error);
