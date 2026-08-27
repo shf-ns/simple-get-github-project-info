@@ -49,6 +49,7 @@ async function getGithubInfo(author) {
         console.log(list);
         //---------------------------获取仓库列表--------------------------------
         const repoList = list.map((item) => item[4]?.slice(0, -4) || "");
+        // console.log(repoList);
         //-----------------------------获取语言列表-----------------------------
         const langList = list.map((item) => item
             .map((items) => {
@@ -59,21 +60,23 @@ async function getGithubInfo(author) {
         })
             .filter((item) => item !== "")
             .map((i) => i.slice(37, -7)));
+        // console.log(langList);
         //---------------------------获取strat数--------------------------
         const stratList = [];
         const index = list
-            .map((item) => item.findIndex((items) => items.includes('<span class="tmp-mr-3">')))
+            .map((item) => item.findIndex((items) => items.includes('<svg aria-label="star"')))
             .map((item) => {
             if (item == -1) {
                 return item;
             }
-            return item - 1;
+            return item + 2;
         });
         for (let i = 0; i < index.length; i++) {
             if (index[i] == -1) {
-                index[i] = list[i].length - 2;
+                stratList.push(0);
+                continue;
             }
-            stratList.push(list[i][index[i]]);
+            stratList.push(parseInt(list[i][index[i]]));
         }
         console.log(stratList);
     }
@@ -84,4 +87,6 @@ async function getGithubInfo(author) {
 // getGithubInfo("Moyhuai");
 getGithubInfo("Roy-Jin");
 export {};
+// getGithubInfo("xcatliu");
+// getGithubInfo("shf-ns");
 //# sourceMappingURL=index.js.map

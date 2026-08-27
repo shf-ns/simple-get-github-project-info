@@ -69,6 +69,7 @@ async function getGithubInfo(author: string): Promise<void> {
 
     //---------------------------获取仓库列表--------------------------------
     const repoList: string[] = list.map((item) => item[4]?.slice(0, -4) || "");
+    // console.log(repoList);
 
     //-----------------------------获取语言列表-----------------------------
     const langList: string[][] = list.map((item) =>
@@ -82,25 +83,27 @@ async function getGithubInfo(author: string): Promise<void> {
         .filter((item) => item !== "")
         .map((i) => i.slice(37, -7)),
     );
+    // console.log(langList);
 
     //---------------------------获取strat数--------------------------
-    const stratList: string[] = [];
+    const stratList: number[] = [];
     const index: number[] = list
       .map((item) =>
-        item.findIndex((items) => items.includes('<span class="tmp-mr-3">')),
+        item.findIndex((items) => items.includes('<svg aria-label="star"')),
       )
       .map((item) => {
         if (item == -1) {
           return item;
         }
-        return item - 1;
+        return item + 2;
       });
 
     for (let i: number = 0; i < index.length; i++) {
       if (index[i] == -1) {
-        index[i] = list[i]!.length - 2;
+        stratList.push(0);
+        continue;
       }
-      stratList.push(list[i]![index[i]!]!);
+      stratList.push(parseInt(list[i]![index[i]!]!));
     }
     console.log(stratList);
   } catch (error) {
@@ -110,3 +113,5 @@ async function getGithubInfo(author: string): Promise<void> {
 
 // getGithubInfo("Moyhuai");
 getGithubInfo("Roy-Jin");
+// getGithubInfo("xcatliu");
+// getGithubInfo("shf-ns");
