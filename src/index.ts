@@ -2,6 +2,7 @@ let repoList: string[] = [];
 let langList: string[][] = [];
 let stratList: number[] = [];
 let updateTimeList: string[] = [];
+let page: number = 1;
 
 /**
  * 处理HTML字符串，提取包含所需信息的HTML部分
@@ -118,8 +119,6 @@ function getUpdateTimeList(list: string[][]): void {
 }
 
 async function getGithubInfo(author: string): Promise<void> {
-  let page: number = 1;
-
   try {
     while (1) {
       const result: Response = await fetch(
@@ -157,7 +156,14 @@ async function getGithubInfo(author: string): Promise<void> {
   } catch (error) {
     console.log(error);
   }
-  console.log(repoList, langList, stratList, updateTimeList);
+
+  //-----------------------组合成一个对象数组------------------------------
+  const repoInfo = repoList.map((repo, i) => ({
+    name: repo,
+    languages: langList[i],
+    stars: stratList[i],
+    updateTime: updateTimeList[i],
+  }));
 }
 
 // getGithubInfo("Moyhuai");
