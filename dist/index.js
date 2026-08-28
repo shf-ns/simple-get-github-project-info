@@ -93,7 +93,7 @@ function getUpdateTimeList(list) {
         .map((item) => item[item.length - 1] || "")
         .map((item) => item.slice(item.lastIndexOf(">") + 1)));
 }
-async function getGithubInfo(author) {
+export async function getGithubInfo(author) {
     try {
         while (1) {
             const result = await fetch("https://github.com/" + author + "?page=" + page + "&tab=repositories");
@@ -132,5 +132,4 @@ async function getGithubInfo(author) {
     }));
     return repoInfo;
 }
-export {};
 //# sourceMappingURL=index.js.map

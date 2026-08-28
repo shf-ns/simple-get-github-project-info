@@ -118,7 +118,7 @@ function getUpdateTimeList(list: string[][]): void {
   );
 }
 
-async function getGithubInfo(author: string): Promise<
+export async function getGithubInfo(author: string): Promise<
   {
     id: number;
     name: string;

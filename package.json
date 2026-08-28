@@ -1,7 +1,7 @@
 {
-  "name": "getgithubinfo",
+  "name": "simple-get-github-project-info",
   "version": "1.0.0",
-  "description": "简单的获取github用户信息的工具",
+  "description": "简单的获取github项目信息的工具",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,8 +20,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --env-file=.env --use-env-proxy --use-system-ca --watch ./dist/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "github",
+    "repositories",
+    "info",
+    "simple"
+  ],
   "author": "shf-ns",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shf-ns/simple-get-github-info.git"
+  },
   "license": "ISC",
   "devEngines": {
     "packageManager": {
