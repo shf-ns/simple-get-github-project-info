@@ -91,37 +91,41 @@ function getUpdateTimeList(list) {
         .map((item) => item.slice(item.lastIndexOf(">") + 1)));
 }
 async function getGithubInfo(author) {
+    let page = 1;
     try {
-        const result = await fetch("https://github.com/" + author + "?page=1&tab=repositories");
-        if (!result.ok) {
-            throw new Error(`HTTP error! status: ${result.status}`);
+        while (1) {
+            const result = await fetch("https://github.com/" + author + "?page=" + page + "&tab=repositories");
+            if (!result.ok) {
+                throw new Error(`HTTP error! status: ${result.status}`);
+            }
+            //-------------------------解析HTML----------------------------
+            const htmlstr = await result.text();
+            const isEnd = htmlstr.includes(author + " doesn’t have any public repositories yet.");
+            if (isEnd) {
+                break;
+            }
+            //---------------------处理HTML字符串---------------------------
+            const list = handleHtml(htmlstr);
+            //---------------------------获取仓库列表--------------------------------
+            getRepoList(list);
+            //-----------------------------获取语言列表-----------------------------
+            getLangList(list);
+            //---------------------------获取strat数--------------------------
+            getStratList(list);
+            //---------------------------获取更新时间--------------------------
+            getUpdateTimeList(list);
+            page++;
         }
-        //-------------------------解析HTML----------------------------
-        const htmlstr = await result.text();
-        //---------------------处理HTML字符串---------------------------
-        const list = handleHtml(htmlstr);
-        console.log(list);
-        //---------------------------获取仓库列表--------------------------------
-        getRepoList(list);
-        // console.log(repoList);
-        console.log(repoList.length);
-        //-----------------------------获取语言列表-----------------------------
-        getLangList(list);
-        // console.log(langList);
-        //---------------------------获取strat数--------------------------
-        getStratList(list);
-        // console.log(stratList);
-        //---------------------------获取更新时间--------------------------
-        getUpdateTimeList(list);
-        // console.log(updateTimeList);
     }
     catch (error) {
         console.log(error);
     }
+    console.log(repoList, langList, stratList, updateTimeList);
 }
 // getGithubInfo("Moyhuai");
-getGithubInfo("Roy-Jin");
-export {};
+// getGithubInfo("Roy-Jin");
+// getGithubInfo("torokmark");
 // getGithubInfo("xcatliu");
-// getGithubInfo("shf-ns");
+getGithubInfo("shf-ns");
+export {};
 //# sourceMappingURL=index.js.map
