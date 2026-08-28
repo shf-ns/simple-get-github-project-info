@@ -118,18 +118,26 @@ export async function getGithubInfo(author) {
             getUpdateTimeList(list);
             page++;
         }
+        //-----------------------组合成一个对象数组------------------------------
+        const repoInfo = repoList.map((repo, i) => ({
+            id: i + 1,
+            name: repo,
+            languages: langList[i] || "",
+            stars: stratList[i] || 0,
+            updateTime: updateTimeList[i] || "",
+        }));
+        //-------------------------------数据重置----------------------------------
+        repoList = [];
+        langList = [];
+        stratList = [];
+        updateTimeList = [];
+        page = 1;
+        return repoInfo;
     }
     catch (error) {
         console.log(error);
     }
-    //-----------------------组合成一个对象数组------------------------------
-    const repoInfo = repoList.map((repo, i) => ({
-        id: i + 1,
-        name: repo,
-        languages: langList[i],
-        stars: stratList[i],
-        updateTime: updateTimeList[i],
-    }));
-    return repoInfo;
 }
+getGithubInfo("shf-ns");
+getGithubInfo("Roy-Jin");
 //# sourceMappingURL=index.js.map

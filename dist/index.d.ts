@@ -1,8 +1,10 @@
-export declare function getGithubInfo(author: string): Promise<{
+interface RepoInfo {
     id: number;
     name: string;
-    languages: string | undefined;
-    stars: number | undefined;
-    updateTime: string | undefined;
-}[]>;
+    languages: string;
+    stars: number;
+    updateTime: string;
+}
+export declare function getGithubInfo(author: string): Promise<RepoInfo[] | undefined>;
+export {};
 //# sourceMappingURL=index.d.ts.map

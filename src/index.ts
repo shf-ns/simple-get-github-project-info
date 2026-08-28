@@ -117,16 +117,17 @@ function getUpdateTimeList(list: string[][]): void {
       .map((item) => item.slice(item.lastIndexOf(">") + 1)),
   );
 }
+interface RepoInfo {
+  id: number;
+  name: string;
+  languages: string;
+  stars: number;
+  updateTime: string;
+}
 
-export async function getGithubInfo(author: string): Promise<
-  {
-    id: number;
-    name: string;
-    languages: string | undefined;
-    stars: number | undefined;
-    updateTime: string | undefined;
-  }[]
-> {
+export async function getGithubInfo(
+  author: string,
+): Promise<RepoInfo[] | undefined> {
   try {
     while (1) {
       const result: Response = await fetch(
@@ -161,18 +162,29 @@ export async function getGithubInfo(author: string): Promise<
       getUpdateTimeList(list);
       page++;
     }
+
+    //-----------------------组合成一个对象数组------------------------------
+
+    const repoInfo: RepoInfo[] = repoList.map((repo, i) => ({
+      id: i + 1,
+      name: repo,
+      languages: langList[i] || "",
+      stars: stratList[i] || 0,
+      updateTime: updateTimeList[i] || "",
+    }));
+
+    //-------------------------------数据重置----------------------------------
+    repoList = [];
+    langList = [];
+    stratList = [];
+    updateTimeList = [];
+    page = 1;
+
+    return repoInfo;
   } catch (error) {
     console.log(error);
   }
-
-  //-----------------------组合成一个对象数组------------------------------
-  const repoInfo = repoList.map((repo, i) => ({
-    id: i + 1,
-    name: repo,
-    languages: langList[i],
-    stars: stratList[i],
-    updateTime: updateTimeList[i],
-  }));
-
-  return repoInfo;
 }
+
+getGithubInfo("shf-ns");
+getGithubInfo("Roy-Jin");
