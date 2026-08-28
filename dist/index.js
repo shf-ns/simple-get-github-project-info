@@ -54,7 +54,8 @@ function getRepoList(list) {
  * @returns {string[][]} 语言列表
  */
 function getLangList(list) {
-    list.map((item) => langList.push(item
+    list
+        .map((item) => item
         .map((items) => {
         if (items.includes('itemprop="programmingLanguage"')) {
             return items;
@@ -62,7 +63,8 @@ function getLangList(list) {
         return "";
     })
         .filter((item) => item !== "")
-        .map((i) => i.slice(37, -7))));
+        .map((i) => i.slice(37, -7)))
+        .forEach((item) => langList.push(item[0] || ""));
 }
 /**
  * 获取strat数列表
@@ -122,16 +124,13 @@ async function getGithubInfo(author) {
     }
     //-----------------------组合成一个对象数组------------------------------
     const repoInfo = repoList.map((repo, i) => ({
+        id: i + 1,
         name: repo,
         languages: langList[i],
         stars: stratList[i],
         updateTime: updateTimeList[i],
     }));
+    return repoInfo;
 }
-// getGithubInfo("Moyhuai");
-// getGithubInfo("Roy-Jin");
-// getGithubInfo("torokmark");
-// getGithubInfo("xcatliu");
-getGithubInfo("shf-ns");
 export {};
 //# sourceMappingURL=index.js.map

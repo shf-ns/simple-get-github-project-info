@@ -1,5 +1,5 @@
 let repoList: string[] = [];
-let langList: string[][] = [];
+let langList: string[] = [];
 let stratList: number[] = [];
 let updateTimeList: string[] = [];
 let page: number = 1;
@@ -69,8 +69,8 @@ function getRepoList(list: string[][]): void {
  * @returns {string[][]} 语言列表
  */
 function getLangList(list: string[][]): void {
-  list.map((item) =>
-    langList.push(
+  list
+    .map((item) =>
       item
         .map((items) => {
           if (items.includes('itemprop="programmingLanguage"')) {
@@ -80,8 +80,8 @@ function getLangList(list: string[][]): void {
         })
         .filter((item) => item !== "")
         .map((i) => i.slice(37, -7)),
-    ),
-  );
+    )
+    .forEach((item) => langList.push(item[0] || ""));
 }
 
 /**
@@ -118,7 +118,15 @@ function getUpdateTimeList(list: string[][]): void {
   );
 }
 
-async function getGithubInfo(author: string): Promise<void> {
+async function getGithubInfo(author: string): Promise<
+  {
+    id: number;
+    name: string;
+    languages: string | undefined;
+    stars: number | undefined;
+    updateTime: string | undefined;
+  }[]
+> {
   try {
     while (1) {
       const result: Response = await fetch(
@@ -159,15 +167,12 @@ async function getGithubInfo(author: string): Promise<void> {
 
   //-----------------------组合成一个对象数组------------------------------
   const repoInfo = repoList.map((repo, i) => ({
+    id: i + 1,
     name: repo,
     languages: langList[i],
     stars: stratList[i],
     updateTime: updateTimeList[i],
   }));
-}
 
-// getGithubInfo("Moyhuai");
-// getGithubInfo("Roy-Jin");
-// getGithubInfo("torokmark");
-// getGithubInfo("xcatliu");
-getGithubInfo("shf-ns");
+  return repoInfo;
+}
